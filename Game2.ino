@@ -9,7 +9,7 @@ void startGame2() {
     food[i] = tmp;
   }
   displayFood(true);
-  foodFound = 0;
+  currentSnakeSize = 0;
 }
 
 //Reset Game 2 to start from beginning 
@@ -43,13 +43,13 @@ void playGame2(int currentPos) {
           displayTimeOut();
           delay(3000);
         }
-        displayScore(foodFound);
+        displayScore(currentSnakeSize);
         delay(10000);
         game = -1; //go back to select game
       }
     
       if(isFood(currentPos) == true) {
-        foodFound = foodFound + 1;
+        currentSnakeSize = currentSnakeSize + 1;
         
         int foodToAdd = random(1,3);
         for (int i = 0; i < foodToAdd; i++) {
@@ -64,7 +64,7 @@ void playGame2(int currentPos) {
         eatFood(currentPos);
       }
 
-      if (foodFound >= MAX_LEVEL) {
+      if (currentSnakeSize >= MAX_LEVEL) {
           displayWin();
           delay(3000);
           game = -1;

@@ -16,7 +16,7 @@ int gameLevel = 0;
 int MAX_LEVEL = 201;
 int tail[201][2]; //Head = Position [0,0]. 0 is Position, 1 is the color
 int food[201]; //food balls placed all over
-int foodFound = 0;
+int currentSnakeSize = 0;
 int currentX = 8;
 int currentY = 16;
 int game = -1; //1 or 2. Zero means not selected
@@ -44,10 +44,15 @@ unsigned long timerStart;
 int TIMEOUT = 60000; //60s
 boolean timeRanout = false;
 
+//Double click Key#1 to rest
+unsigned long lastTimeKey1Pressed;
+int key1PressCount = 0; //resets in 2s
+
+
 int addToTail(int pos, uint16_t color333) {
-  int pop = tail[foodFound][0]; //last item in tail 
-  uint16_t popColor = tail[foodFound][1];
-  for (int i = foodFound; i > 0; i--) {
+  int pop = tail[currentSnakeSize][0]; //last item in tail 
+  uint16_t popColor = tail[currentSnakeSize][1];
+  for (int i = currentSnakeSize; i > 0; i--) {
     //Shift the tail to make room on head;
     tail[i][0] = tail[i - 1][0];
     tail[i][1] = tail[i - 1][1];    
@@ -70,7 +75,7 @@ void deleteFromTail(int pos) {
 
 boolean isTouchingTheTail(int pos) {
   boolean touching = false;
-  for (int i = 1; i <= foodFound; i++) {
+  for (int i = 1; i <= currentSnakeSize; i++) {
     if (tail[i][0] == pos) {
       touching = true;
       break;
@@ -144,24 +149,34 @@ void setup() {
 }
 
 void loop() {
-  delay(50);
+  // delay(50);
 
   mpu6050.update();
   int yAngle = mpu6050.getAccAngleY();   
   int xAngle = mpu6050.getAccAngleX(); 
-  int zAcc = mpu6050.getAccZ()*100;
-  // Serial.print("zAcc : "); Serial.println(zAcc);
 
-  if ((abs(zAcc) > 160) ) {
+  unsigned long delta = millis() - lastTimeKey1Pressed;
+  if (delta > 2000) {
+    key1PressCount = 0; //resets to 0 after 2s
+  }
+
+  if (key1PressCount > 1 && game != -1) {
+    Serial.println("Reset Game");
+    key1PressCount = 0; //we got the reset intention, reset click count
     game = -1;
     resetDrawScreen();
     currentX = 8;
     currentY = 16;
     return;
   }
+
+  if (key1bouce) {
+    delay(100); key1bouce = false;        
+  }
+
   
- Serial.print("accAngleX : "); Serial.print(xAngle);
- Serial.print("\taccAngleY : "); Serial.print(yAngle);
+//  Serial.print("accAngleX : "); Serial.print(xAngle);
+//  Serial.print("\taccAngleY : "); Serial.print(yAngle);
   
   currentX = (xAngle < -8) ? currentX + 1 : ((xAngle > 8) ? currentX - 1 : currentX);
   currentY = (yAngle < -6) ? currentY + 1 : ((yAngle > 6) ? currentY - 1 : currentY);
@@ -170,12 +185,12 @@ void loop() {
 
   unsigned int currentPos = currentX + 16*currentY; 
               
- Serial.print("\tX : "); Serial.print(currentX);   
- Serial.print("\tY : "); Serial.print(currentY);
- Serial.print("\tCurrentPos : "); Serial.println(currentPos);
+//  Serial.print("\tX : "); Serial.print(currentX);   
+//  Serial.print("\tY : "); Serial.print(currentY);
+//  Serial.print("\tCurrentPos : "); Serial.println(currentPos);
   
 //  Serial.print("Tail: ");
-//  for (int i = 0; i <= foodFound; i++) {
+//  for (int i = 0; i <= currentSnakeSize; i++) {
 //    Serial.print(tail[i]);
 //    Serial.print(" ");
 //  }  
@@ -235,13 +250,13 @@ void blinkLED(int col, int row, uint16_t color333, boolean on=true) {
 }
 
 void selectGame(int currentPos) {    
-   Serial.print("Select Game"); 
-   Serial.print("\tCurrentPos : "); Serial.println(currentPos);
+  //  Serial.print("Select Game"); 
+  //  Serial.print("\tCurrentPos : "); Serial.println(currentPos);
 
     int clearPos = addToTail(currentPos, matrix.Color333(0, 7, 0));
     int row = clearPos % 16; //y axis (0 to 7)
     int col = clearPos / 16; //x axis (0 to 31)
-    Serial.print("\tclearPos : "); Serial.println(clearPos);
+    // Serial.print("\tclearPos : "); Serial.println(clearPos);
     matrix.drawPixel(col, row, matrix.Color333(0, 0, 0));
 
     //set the currentPos
@@ -276,6 +291,8 @@ void key1Pressed() {
     Serial.print(millis());
     Serial.println("\tkey 1 is pressed");
     selectedColor = color1;
+    lastTimeKey1Pressed = millis();
+    key1PressCount +=1;
   }
 }
 

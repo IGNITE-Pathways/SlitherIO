@@ -8,7 +8,7 @@ void resetDrawScreen() {
   }
   currentX = 8;
   currentY = 16;
-  foodFound = 0;
+  currentSnakeSize = 0;
   color1 = matrix.Color333(0, 7, 0);
   color2 = matrix.Color333(7, 0, 0);
   color3 = matrix.Color333(0, 0, 7); 
@@ -41,7 +41,7 @@ void draw(int currentPos) {
    if (currentPos != tail[0][0]) {  
       if (!isTouchingTheTail(currentPos)) {
         if (selectedColor != matrix.Color333(0, 0, 0)) {
-          foodFound = foodFound + 1;
+          currentSnakeSize = currentSnakeSize + 1;
           addToTail(currentPos, selectedColor);
         }
       } else {
@@ -52,7 +52,7 @@ void draw(int currentPos) {
         }
       }
       //set the currentPos     
-      if (foodFound > MAX_LEVEL) {   
+      if (currentSnakeSize > MAX_LEVEL) {   
         delay(3000);
         resetDrawScreen();
         game = -1;

@@ -24,7 +24,7 @@ void gameLevelUp() {
     food[i] = tmp;
   }
   displayFood(true);
-  foodFound = 0;
+  currentSnakeSize = 0;
 }
 
 //Reset Game to start from LEV-1
@@ -83,11 +83,11 @@ void playGame1(int currentPos) {
       }
     
       if(isFood(currentPos) == true) {
-        foodFound = foodFound + 1;
+        currentSnakeSize = currentSnakeSize + 1;
         eatFood(currentPos);
       }
 
-      if(foodFound >= gameLevel) {
+      if(currentSnakeSize >= gameLevel) {
         retryCount = 0; 
         gameLevelUp();
         return;

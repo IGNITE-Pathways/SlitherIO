@@ -290,9 +290,9 @@ void playDice() {
   int xAcc = mpu6050.getAccX()*100;
   int yAcc = mpu6050.getAccY()*100;
   int zAcc = mpu6050.getAccZ()*100;
-  Serial.print("accX : ");Serial.print(xAcc);
-  Serial.print("\taccY : ");Serial.print(yAcc);
-  Serial.print("\taccZ : ");Serial.println(zAcc);
+  // Serial.print("accX : ");Serial.print(xAcc);
+  // Serial.print("\taccY : ");Serial.print(yAcc);
+  // Serial.print("\taccZ : ");Serial.println(zAcc);
 
   if (abs(xAcc) > 5) {
     SetSpeedX();
