@@ -216,7 +216,7 @@ void loop() {
     }
 }
 
-void blinkLED(int row, int col, uint16_t color333, boolean on=true) {
+void blinkLED(int col, int row, uint16_t color333, boolean on=true) {
     if (on) {
       for (int i = 0; i < 2; i++) {
         matrix.drawPixel(col, row, matrix.Color333(0, 0, 0));
@@ -247,9 +247,9 @@ void selectGame(int currentPos) {
     //set the currentPos
     row = currentPos % 16; //y axis (0 to 7)
     col = currentPos / 16; //x axis (0 to 31)
-    blinkLED(row,col, matrix.Color333(0, 7, 0));
+    blinkLED(col,row, matrix.Color333(0, 7, 0));
 
-    if ((row >5 ) && (row <= 11)) {
+    if ((row >4 ) && (row <= 10)) {
       if ((col >=5 ) && (col <= 7)) {
         game = 1; 
         resetGame1();
@@ -311,14 +311,14 @@ void timeoutBar() {
    int ledToLightUp = map(timePassed, 0, TIMEOUT, 0,32);
    switch (game) {
      case 1: 
-       //matrix.drawLine(0, 15, ledToLightUp, 15, matrix.Color333(1, 1, 1));
+       matrix.drawLine(0, 15, ledToLightUp, 15, matrix.Color333(1, 1, 1));
        if (ledToLightUp >=32) {
            timeRanout = true;
        }
        break;
      case 2:
      case 4:
-       //matrix.drawPixel(ledToLightUp, 15, matrix.Color333(1, 1, 1));
+       matrix.drawPixel(ledToLightUp, 15, matrix.Color333(1, 1, 1));
        if (ledToLightUp >=32) {
            timeRanout = true;
        }

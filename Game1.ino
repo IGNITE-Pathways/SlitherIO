@@ -101,6 +101,8 @@ void playGame1(int currentPos) {
   //set the currentPos
   int row = currentPos % 16; //y axis (0 to 7)
   int col = currentPos / 16; //x axis (0 to 31)
+  Serial.print("Row: "); Serial.print(row);
+  Serial.print(", Col: "); Serial.println(col);
   blinkLED(col, row, matrix.Color333(0, 7, 0));
   displayFood(false); //fix for bug when food disappear sometimes!
 }
